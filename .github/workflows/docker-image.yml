@@ -1,4 +1,4 @@
-name: docker-image
+name: docker-images-youtube-downloader
 on:
   push:
     branches:
