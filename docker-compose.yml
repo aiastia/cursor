@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   web:
-    image: aiastia/youtube-downloader:latest
+    image: aiastia/youtube-downloader:main
     ports:
       - "5000:5000"
     volumes:
