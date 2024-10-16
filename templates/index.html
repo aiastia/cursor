@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube 视频下载器</title>
+    <!-- 引入 Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">YouTube 视频下载器</h1>
+        <form id="download-form" class="mt-4">
+            <div class="form-group">
+                <label for="url">YouTube 视频 URL:</label>
+                <input type="text" id="url" name="url" class="form-control" placeholder="请输入视频链接" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">下载</button>
+        </form>
+        <div id="message" class="mt-3 text-center"></div>
+        <div id="progress" class="mt-3 text-center"></div>
+    </div>
+
+    <!-- 引入 Bootstrap 和 jQuery JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        document.getElementById('download-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const url = document.getElementById('url').value;
+            const progressDiv = document.getElementById('progress');
+            progressDiv.textContent = '下载中...'; // 在请求发送前立即显示“下载中...”
+            
+            fetch('/download', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ url: url })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const messageDiv = document.getElementById('message');
+                if (data.error) {
+                    messageDiv.textContent = '错误: ' + data.error;
+                    progressDiv.textContent = ''; // 清除“下载中...”提示
+                } else {
+                    messageDiv.innerHTML = `下载已开始。<a href="${data.download_url}" target="_blank">点击这里下载</a>`;
+                    progressDiv.textContent = ''; // 清除“下载中...”提示
+                }
+            })
+            .catch(error => {
+                document.getElementById('message').textContent = '错误: ' + error;
+                progressDiv.textContent = ''; // 清除“下载中...”提示
+            });
+        });
+    </script>
+</body>
+</html>
